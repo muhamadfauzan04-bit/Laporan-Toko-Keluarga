@@ -42,7 +42,7 @@ class _TambahProdukPageState extends State<TambahProdukPage> {
       return;
     }
 
-    const String urlApi = 'http://localhost:3000/api/produk';
+    const String urlApi = 'http://10.0.2.2:3000/api/produk';
 
     try {
       final response = await http.post(

@@ -17,7 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _sembunyikanPassword = true;
 
   Future<void> _prosesLogin() async {
-    const String urlApi = 'http://localhost:3000/api/login';
+    const String urlApi = 'http://10.0.2.2:3000/api/login';
 
     try {
       final response = await http.post(

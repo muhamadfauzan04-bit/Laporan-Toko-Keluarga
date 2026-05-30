@@ -22,7 +22,7 @@ class _KatalogPageState extends State<KatalogPage> {
   }
 
   Future<void> _ambilDataProduk() async {
-    const String urlApi = 'http://localhost:3000/api/produk';
+    const String urlApi = 'http://10.0.2.2:3000/api/produk';
     try {
       final response = await http.get(Uri.parse(urlApi));
       if (response.statusCode == 200) {

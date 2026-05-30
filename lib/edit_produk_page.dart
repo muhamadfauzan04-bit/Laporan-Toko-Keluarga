@@ -43,7 +43,7 @@ class _EditProdukPageState extends State<EditProdukPage> {
 
   Future<void> _updateData() async {
     final int idProduk = widget.produk['id'];
-    final String urlApi = 'http://localhost:3000/api/produk/$idProduk';
+    final String urlApi = 'http://10.0.2.2:3000/api/produk/$idProduk';
 
     try {
       final response = await http.put(
