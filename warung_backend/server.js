@@ -160,6 +160,57 @@ app.post('/api/restock', (req, res) => {
         });
     });
 });
+// ====================================================================
+// SPRINT 6: API MANAJEMEN INVENTORI (BARANG KELUAR)
+// ====================================================================
+
+// 1. API GET: Mengambil daftar riwayat barang keluar
+app.get('/api/barang-keluar', (req, res) => {
+    const sql = `
+        SELECT r.id, r.jumlah_keluar, r.tanggal_keluar, r.keterangan, p.nama_produk 
+        FROM riwayat_keluar r
+        JOIN produk p ON r.id_produk = p.id
+        ORDER BY r.tanggal_keluar DESC, r.id DESC
+    `;
+    
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error mengambil data riwayat keluar:', err);
+            return res.status(500).json({ message: 'Gagal mengambil data riwayat keluar' });
+        }
+        res.status(200).json(results);
+    });
+});
+
+// 2. API POST: Mencatat barang keluar & Otomatis Kurangi Stok
+app.post('/api/barang-keluar', (req, res) => {
+    const { id_produk, jumlah_keluar, tanggal_keluar, keterangan } = req.body;
+
+    // Langkah A: Masukkan data sebagai bukti transaksi keluar
+    const sqlInsert = 'INSERT INTO riwayat_keluar (id_produk, jumlah_keluar, tanggal_keluar, keterangan) VALUES (?, ?, ?, ?)';
+    
+    db.query(sqlInsert, [id_produk, jumlah_keluar, tanggal_keluar, keterangan], (err, result) => {
+        if (err) {
+            console.error('Error insert riwayat keluar:', err);
+            return res.status(500).json({ message: 'Gagal mencatat riwayat barang keluar' });
+        }
+
+        // Langkah B: Kurangi stok di tabel produk
+        // Perhatikan tanda minus (-) pada 'stok = stok - ?'
+        const sqlUpdate = 'UPDATE produk SET stok = stok - ? WHERE id = ?';
+        
+        db.query(sqlUpdate, [jumlah_keluar, id_produk], (err2, result2) => {
+            if (err2) {
+                console.error('Error update stok keluar:', err2);
+                return res.status(500).json({ message: 'Riwayat tercatat, tapi gagal mengurangi stok katalog' });
+            }
+            
+            res.status(200).json({ 
+                message: 'Sukses! Barang keluar dicatat dan stok katalog otomatis berkurang.' 
+            });
+        });
+    });
+});
 app.listen(PORT, () => {
     console.log(`Server Backend WARUNG.IN menyala di: http://localhost:${PORT}`);
 });
