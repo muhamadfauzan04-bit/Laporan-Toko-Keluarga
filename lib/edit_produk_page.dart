@@ -66,10 +66,6 @@ class _EditProdukPageState extends State<EditProdukPage> {
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const KatalogPage()),
-        );
       }
     } catch (e) {
       ScaffoldMessenger.of(

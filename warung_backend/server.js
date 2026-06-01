@@ -211,6 +211,34 @@ app.post('/api/barang-keluar', (req, res) => {
         });
     });
 });
+// ====================================================================
+// SPRINT 7: API DASHBOARD (BERANDA)
+// ====================================================================
+app.get('/api/dashboard', (req, res) => {
+    // Kita gunakan 3 query berurutan untuk mengambil total masing-masing data
+    const queryProduk = 'SELECT COUNT(*) AS total FROM produk';
+    const queryMasuk = 'SELECT COALESCE(SUM(jumlah_masuk), 0) AS total FROM riwayat_stok';
+    const queryKeluar = 'SELECT COALESCE(SUM(jumlah_keluar), 0) AS total FROM riwayat_keluar';
+
+    db.query(queryProduk, (err1, resProduk) => {
+        if (err1) return res.status(500).json({ error: err1.message });
+        
+        db.query(queryMasuk, (err2, resMasuk) => {
+            if (err2) return res.status(500).json({ error: err2.message });
+            
+            db.query(queryKeluar, (err3, resKeluar) => {
+                if (err3) return res.status(500).json({ error: err3.message });
+                
+                // Gabungkan semua hasilnya dan kirim ke Flutter
+                res.status(200).json({
+                    total_produk: resProduk[0].total,
+                    total_masuk: resMasuk[0].total,
+                    total_keluar: resKeluar[0].total
+                });
+            });
+        });
+    });
+});
 app.listen(PORT, () => {
     console.log(`Server Backend WARUNG.IN menyala di: http://localhost:${PORT}`);
 });

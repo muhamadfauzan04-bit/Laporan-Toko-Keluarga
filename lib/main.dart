@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'riwayat_barang_keluar_page.dart';
-import 'riwayat_restock_page.dart';
 import 'login_page.dart';
 
 void main() {
@@ -23,7 +21,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const RiwayatBarangKeluarPage(),
+      home: const LoginPage(), // Pintu masuk aplikasi dikembalikan ke Login
     );
   }
 }
