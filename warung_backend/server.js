@@ -239,6 +239,51 @@ app.get('/api/dashboard', (req, res) => {
         });
     });
 });
+// ====================================================================
+// SPRINT 8: API TRANSAKSI KASIR (KERANJANG BELANJA)
+// ====================================================================
+
+app.post('/api/transaksi', (req, res) => {
+    const { total_tagihan, uang_diterima, kembalian, keranjang } = req.body;
+
+    // 1. Simpan data struk utama ke tabel 'transaksi'
+    const sqlTransaksi = 'INSERT INTO transaksi (total_tagihan, uang_diterima, kembalian) VALUES (?, ?, ?)';
+    db.query(sqlTransaksi, [total_tagihan, uang_diterima, kembalian], (err, resultTransaksi) => {
+        if (err) {
+            console.error('Error insert transaksi:', err);
+            return res.status(500).json({ message: 'Gagal membuat transaksi utama' });
+        }
+
+        const idTransaksiBaru = resultTransaksi.insertId;
+
+        // 2. Looping (Ulangi) untuk setiap barang di dalam keranjang
+        keranjang.forEach((item) => {
+            // A. Masukkan barang ke tabel 'detail_transaksi'
+            const sqlDetail = 'INSERT INTO detail_transaksi (id_transaksi, id_produk, jumlah, subtotal) VALUES (?, ?, ?, ?)';
+            db.query(sqlDetail, [idTransaksiBaru, item.id_produk, item.jumlah, item.subtotal], (errDetail) => {
+                if (errDetail) console.error('Error insert detail:', errDetail);
+            });
+
+            // B. Kurangi stok di tabel 'produk'
+            const sqlUpdateStok = 'UPDATE produk SET stok = stok - ? WHERE id = ?';
+            db.query(sqlUpdateStok, [item.jumlah, item.id_produk], (errStok) => {
+                if (errStok) console.error('Error update stok checkout:', errStok);
+            });
+            
+            // C. (Opsional tapi penting) Catat juga ke riwayat_keluar agar sinkron dengan Sprint 6
+            const sqlRiwayat = 'INSERT INTO riwayat_keluar (id_produk, jumlah_keluar, tanggal_keluar, keterangan) VALUES (?, ?, CURDATE(), ?)';
+            db.query(sqlRiwayat, [item.id_produk, item.jumlah, `Terjual via Kasir (Struk #${idTransaksiBaru})`], (errRiwayat) => {
+                if (errRiwayat) console.error('Error insert riwayat dari kasir:', errRiwayat);
+            });
+        });
+
+        // 3. Kirim balasan sukses setelah struk dan keranjang diproses
+        res.status(200).json({ 
+            message: 'Transaksi Berhasil!', 
+            id_transaksi: idTransaksiBaru 
+        });
+    });
+});
 app.listen(PORT, () => {
     console.log(`Server Backend WARUNG.IN menyala di: http://localhost:${PORT}`);
 });
