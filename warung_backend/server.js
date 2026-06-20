@@ -284,6 +284,46 @@ app.post('/api/transaksi', (req, res) => {
         });
     });
 });
+// ====================================================================
+// SPRINT 9: API LAPORAN REAL-TIME (GRAFIK & NOTIFIKASI STOK)
+// ====================================================================
+
+// 1. API untuk Grafik Penjualan Harian (7 Hari Terakhir)
+app.get('/api/grafik-penjualan', (req, res) => {
+    // Kita mengambil total pendapatan per hari dari tabel transaksi
+    const sqlGrafik = `
+        SELECT 
+            DATE(tanggal_transaksi) as tanggal, 
+            SUM(total_tagihan) as total_pendapatan 
+        FROM transaksi 
+        GROUP BY DATE(tanggal_transaksi) 
+        ORDER BY tanggal DESC 
+        LIMIT 7
+    `;
+    
+    db.query(sqlGrafik, (err, results) => {
+        if (err) {
+            console.error('Error fetch grafik:', err);
+            return res.status(500).json({ message: 'Gagal mengambil data grafik' });
+        }
+        // Karena datanya descending (terbaru di atas), kita reverse agar urutan harinya maju di grafik
+        res.status(200).json(results.reverse());
+    });
+});
+
+// 2. API untuk Peringatan Stok Menipis
+app.get('/api/stok-menipis', (req, res) => {
+    // Kita asumsikan batas aman stok adalah 10. Jika <= 10, masuk ke daftar kritis.
+    const sqlStok = 'SELECT id, nama_produk, stok FROM produk WHERE stok <= 10 ORDER BY stok ASC';
+    
+    db.query(sqlStok, (err, results) => {
+        if (err) {
+            console.error('Error fetch stok menipis:', err);
+            return res.status(500).json({ message: 'Gagal mengambil data stok' });
+        }
+        res.status(200).json(results);
+    });
+});
 app.listen(PORT, () => {
     console.log(`Server Backend WARUNG.IN menyala di: http://localhost:${PORT}`);
 });

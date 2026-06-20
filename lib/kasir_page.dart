@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'checkout_page.dart'; // Menyambungkan ke file kedua
+import 'checkout_page.dart';
 
 class KasirPage extends StatefulWidget {
   const KasirPage({super.key});
@@ -13,9 +13,8 @@ class KasirPage extends StatefulWidget {
 class _KasirPageState extends State<KasirPage> {
   List _produkList = [];
   bool _isLoading = true;
-  
-  // Format keranjang: { id_produk: { nama, harga, qty } }
-  Map<int, dynamic> _keranjang = {}; 
+
+  Map<int, dynamic> _keranjang = {};
 
   @override
   void initState() {
@@ -46,7 +45,10 @@ class _KasirPageState extends State<KasirPage> {
           _keranjang[id]['qty']++;
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Stok tidak mencukupi!'), duration: Duration(seconds: 1)),
+            const SnackBar(
+              content: Text('Stok tidak mencukupi!'),
+              duration: Duration(seconds: 1),
+            ),
           );
         }
       } else {
@@ -55,11 +57,14 @@ class _KasirPageState extends State<KasirPage> {
             'id_produk': id,
             'nama_produk': produk['nama_produk'],
             'harga': produk['harga'],
-            'qty': 1
+            'qty': 1,
           };
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Stok habis!'), duration: Duration(seconds: 1)),
+            const SnackBar(
+              content: Text('Stok habis!'),
+              duration: Duration(seconds: 1),
+            ),
           );
         }
       }
@@ -95,12 +100,14 @@ class _KasirPageState extends State<KasirPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Transaksi Baru', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Transaksi Baru',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
         centerTitle: false,
       ),
       body: Column(
         children: [
-          // Kotak Pencarian
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Container(
@@ -119,7 +126,6 @@ class _KasirPageState extends State<KasirPage> {
             ),
           ),
 
-          // Daftar Produk
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -129,7 +135,9 @@ class _KasirPageState extends State<KasirPage> {
                     itemBuilder: (context, index) {
                       final produk = _produkList[index];
                       int id = produk['id'];
-                      int qty = _keranjang.containsKey(id) ? _keranjang[id]['qty'] : 0;
+                      int qty = _keranjang.containsKey(id)
+                          ? _keranjang[id]['qty']
+                          : 0;
 
                       return Container(
                         margin: const EdgeInsets.only(bottom: 15),
@@ -138,7 +146,11 @@ class _KasirPageState extends State<KasirPage> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
-                            BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 8),
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.1),
+                              spreadRadius: 1,
+                              blurRadius: 8,
+                            ),
                           ],
                         ),
                         child: Row(
@@ -148,36 +160,77 @@ class _KasirPageState extends State<KasirPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(produk['nama_produk'], style: const TextStyle(color: Color(0xFFFF823A), fontWeight: FontWeight.bold, fontSize: 16)),
+                                  Text(
+                                    produk['nama_produk'],
+                                    style: const TextStyle(
+                                      color: Color(0xFFFF823A),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
                                   const SizedBox(height: 5),
-                                  Text('Rp ${produk['harga']}', style: const TextStyle(color: Color(0xFF005088), fontWeight: FontWeight.bold, fontSize: 16)),
+                                  Text(
+                                    'Rp ${produk['harga']}',
+                                    style: const TextStyle(
+                                      color: Color(0xFF005088),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
                                   const SizedBox(height: 5),
-                                  Text('Sisa : ${produk['stok']} Pcs', style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                                  Text(
+                                    'Sisa : ${produk['stok']} Pcs',
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
-                            
-                            // Tombol Plus Minus (Counter)
+
                             Row(
                               children: [
                                 InkWell(
                                   onTap: () => _kurangQty(id),
                                   child: Container(
                                     padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(color: const Color(0xFF005088), borderRadius: BorderRadius.circular(4)),
-                                    child: const Icon(Icons.remove, color: Colors.white, size: 20),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF005088),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: const Icon(
+                                      Icons.remove,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                                  child: Text('$qty', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                  ),
+                                  child: Text(
+                                    '$qty',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
                                 ),
                                 InkWell(
                                   onTap: () => _tambahQty(produk),
                                   child: Container(
                                     padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(color: const Color(0xFF005088), borderRadius: BorderRadius.circular(4)),
-                                    child: const Icon(Icons.add, color: Colors.white, size: 20),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF005088),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: const Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -189,51 +242,74 @@ class _KasirPageState extends State<KasirPage> {
                   ),
           ),
 
-          // Bottom Bar Keranjang
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             decoration: const BoxDecoration(
               color: Color(0xFF005088),
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.shopping_cart_outlined, color: Colors.white, size: 30),
+                    const Icon(
+                      Icons.shopping_cart_outlined,
+                      color: Colors.white,
+                      size: 30,
+                    ),
                     const SizedBox(width: 10),
-                    Text('Total : Rp $totalHarga', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                    Text(
+                      'Total : Rp $totalHarga',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                   ],
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFF823A),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
-                  onPressed: _keranjang.isEmpty ? null : () {
-                    // Pindah ke Halaman Checkout dan bawa data keranjang
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CheckoutPage(
-                          keranjang: _keranjang.values.toList(),
-                          totalTagihan: totalHarga,
-                        ),
-                      ),
-                    ).then((value) {
-                      // Jika checkout sukses dan kembali ke sini, reset keranjang & refresh produk
-                      if (value == true) {
-                        setState(() { _keranjang.clear(); });
-                        _ambilDataProduk();
-                      }
-                    });
-                  },
-                  child: const Text('Checkout >', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                )
+                  onPressed: _keranjang.isEmpty
+                      ? null
+                      : () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CheckoutPage(
+                                keranjang: _keranjang.values.toList(),
+                                totalTagihan: totalHarga,
+                              ),
+                            ),
+                          ).then((value) {
+                            if (value == true) {
+                              setState(() {
+                                _keranjang.clear();
+                              });
+                              _ambilDataProduk();
+                            }
+                          });
+                        },
+                  child: const Text(
+                    'Checkout >',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

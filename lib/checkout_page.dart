@@ -6,7 +6,11 @@ class CheckoutPage extends StatefulWidget {
   final List keranjang;
   final int totalTagihan;
 
-  const CheckoutPage({super.key, required this.keranjang, required this.totalTagihan});
+  const CheckoutPage({
+    super.key,
+    required this.keranjang,
+    required this.totalTagihan,
+  });
 
   @override
   State<CheckoutPage> createState() => _CheckoutPageState();
@@ -31,14 +35,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Future<void> _selesaikanTransaksi() async {
     if (_uangController.text.isEmpty || _kembalian < 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Uang pembayaran kurang atau belum diisi!'), backgroundColor: Colors.red),
+        const SnackBar(
+          content: Text('Uang pembayaran kurang atau belum diisi!'),
+          backgroundColor: Colors.red,
+        ),
       );
       return;
     }
 
     setState(() => _isLoading = true);
 
-    // Format data untuk dikirim ke Node.js
     List keranjangAPI = widget.keranjang.map((item) {
       return {
         'id_produk': item['id_produk'],
@@ -55,18 +61,23 @@ class _CheckoutPageState extends State<CheckoutPage> {
           'total_tagihan': widget.totalTagihan,
           'uang_diterima': int.parse(_uangController.text.replaceAll('.', '')),
           'kembalian': _kembalian,
-          'keranjang': keranjangAPI
+          'keranjang': keranjangAPI,
         }),
       );
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Transaksi Berhasil Disimpan!'), backgroundColor: Colors.green),
+          const SnackBar(
+            content: Text('Transaksi Berhasil Disimpan!'),
+            backgroundColor: Colors.green,
+          ),
         );
-        Navigator.pop(context, true); // Tutup halaman checkout, kirim sinyal 'true' ke kasir
+        Navigator.pop(context, true);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Gagal koneksi ke server.')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Gagal koneksi ke server.')));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -83,7 +94,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Detail Pembayaran', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Detail Pembayaran',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -96,7 +110,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 2, blurRadius: 10)],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 2,
+                    blurRadius: 10,
+                  ),
+                ],
               ),
               child: Column(
                 children: [
@@ -107,30 +127,51 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(child: Text('${item['nama_produk']} x ${item['qty']}', style: const TextStyle(fontSize: 14))),
+                          Expanded(
+                            child: Text(
+                              '${item['nama_produk']} x ${item['qty']}',
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ),
                           Text('Rp $sub', style: const TextStyle(fontSize: 14)),
                         ],
                       ),
                     );
                   }).toList(),
-                  
+
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Text('----------------------------------------------------', style: TextStyle(color: Colors.grey), maxLines: 1),
+                    child: Text(
+                      '----------------------------------------------------',
+                      style: TextStyle(color: Colors.grey),
+                      maxLines: 1,
+                    ),
                   ),
-                  
-                  Text('Total Tagihan: Rp ${widget.totalTagihan}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+
+                  Text(
+                    'Total Tagihan: Rp ${widget.totalTagihan}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 30),
-            
+
             // Input Uang
-            const Text('Uang Diterima (Rp)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+            const Text(
+              'Uang Diterima (Rp)',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            ),
             const SizedBox(height: 8),
             Container(
-              decoration: BoxDecoration(color: const Color(0xFFE8EDF2), borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE8EDF2),
+                borderRadius: BorderRadius.circular(8),
+              ),
               child: TextField(
                 controller: _uangController,
                 keyboardType: TextInputType.number,
@@ -138,21 +179,24 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 decoration: const InputDecoration(
                   hintText: 'Contoh: 100000',
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 40),
-            
+
             // Info Kembalian
             Center(
               child: Text(
                 'Kembalian : Rp $_kembalian',
                 style: TextStyle(
-                  fontSize: 22, 
-                  fontWeight: FontWeight.bold, 
-                  color: _kembalian < 0 ? Colors.red : const Color(0xFFFF823A)
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: _kembalian < 0 ? Colors.red : const Color(0xFFFF823A),
                 ),
               ),
             ),
@@ -167,12 +211,21 @@ class _CheckoutPageState extends State<CheckoutPage> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF005088),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             onPressed: _isLoading ? null : _selesaikanTransaksi,
-            child: _isLoading 
-                ? const CircularProgressIndicator(color: Colors.white) 
-                : const Text('Selesaikan Transaksi', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+            child: _isLoading
+                ? const CircularProgressIndicator(color: Colors.white)
+                : const Text(
+                    'Selesaikan Transaksi',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
           ),
         ),
       ),

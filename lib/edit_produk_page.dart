@@ -197,7 +197,7 @@ class _EditProdukPageState extends State<EditProdukPage> {
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF005088), // Biru Gelap
+                  backgroundColor: const Color(0xFF005088),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

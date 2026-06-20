@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'edit_produk_page.dart';
 import 'tambah_produk_page.dart';
-import 'profil_page.dart'; // Tambahan import halaman profil
+import 'profil_page.dart';
 
 class KatalogPage extends StatefulWidget {
   const KatalogPage({super.key});
@@ -39,7 +39,7 @@ class _KatalogPageState extends State<KatalogPage> {
   }
 
   Future<void> _eksekusiHapusProduk(int id) async {
-    final String urlApi = 'http://10.0.2.2:3000/api/produk/$id'; // Typo localhost diperbaiki jadi 10.0.2.2 agar aman di emulator
+    final String urlApi = 'http://10.0.2.2:3000/api/produk/$id';
     try {
       final response = await http.delete(Uri.parse(urlApi));
       if (response.statusCode == 200) {
@@ -147,18 +147,20 @@ class _KatalogPageState extends State<KatalogPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        automaticallyImplyLeading: false, // Menghilangkan panah back bawaan
+        automaticallyImplyLeading: false,
         title: const Text(
           'Katalog Produk',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         actions: [
-          // Tambahan Ikon Profil di Kanan Atas
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
             child: InkWell(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilPage()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilPage()),
+                );
               },
               child: const CircleAvatar(
                 backgroundColor: Color(0xFF005088),
@@ -166,7 +168,7 @@ class _KatalogPageState extends State<KatalogPage> {
                 child: Icon(Icons.person, color: Colors.white, size: 20),
               ),
             ),
-          )
+          ),
         ],
       ),
       body: Column(
@@ -309,13 +311,11 @@ class _KatalogPageState extends State<KatalogPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // Buka form tambah, dan tunggu sampai form-nya ditutup (pop)
           final result = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const TambahProdukPage()),
           );
-          
-          // Jika ditutup dengan membawa sinyal 'true' (berhasil simpan), refresh data!
+
           if (result == true) {
             _ambilDataProduk();
           }
